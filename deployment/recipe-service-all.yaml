@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cookmate-recipe
+  namespace: cookmate
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: cookmate-recipe
+  template:
+    metadata:
+      labels:
+        app: cookmate-recipe
+    spec:
+      containers:
+      - name: cookmate-recipe
+        image: kiennlt/cookmate-recipe:latest
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cookmate-recipe
+  namespace: cookmate
+spec:
+  selector:
+    app: cookmate-recipe
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: ClusterIP
