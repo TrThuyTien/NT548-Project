@@ -11,7 +11,7 @@ const authenticateToken = require("../middleware/auth");
 
 /**
  * @swagger
- * /user/registration:
+ * /registration:
  *   post:
  *     summary: Đăng ký tài khoản mới
  *     tags: [User]
@@ -72,7 +72,7 @@ router.post('/registration', UserController.register);
 
 /**
  * @swagger
- * /user/login:
+ * /login:
  *   post:
  *     summary: Đăng nhập tài khoản
  *     tags: [User]
@@ -160,7 +160,7 @@ router.post('/login', UserController.login);
 
 /**
  * @swagger
- * /user/updateAvatar:
+ * /updateAvatar:
  *   post:
  *     summary: Cập nhật ảnh đại diện người dùng
  *     description: Upload ảnh đại diện mới cho người dùng đã đăng nhập. Yêu cầu xác thực bằng access token và gửi ảnh dưới dạng multipart/form-data.
@@ -227,7 +227,7 @@ router.post('/login', UserController.login);
 router.post('/updateAvatar', upload.single('image'), authenticateToken, UserController.updateAvatar);
 /**
  * @swagger
- * /user/verifyOtp:
+ * /verifyOtp:
  *   post:
  *     summary: Xác thực mã OTP
  *     tags: [User]
@@ -284,7 +284,7 @@ router.post('/verifyOtp', UserController.verifyOtp);
 
 /**
  * @swagger
- * /user/forgotPassword:
+ * /forgotPassword:
  *   post:
  *     summary: Yêu cầu đặt lại mật khẩu (quên mật khẩu)
  *     tags: [User]
@@ -339,7 +339,7 @@ router.post('/forgotPassword', UserController.forgotPassword);
 
 /**
  * @swagger
- * /user/resetPassword:
+ * /resetPassword:
  *   post:
  *     summary: Đặt lại mật khẩu mới
  *     tags: [User]
@@ -386,7 +386,7 @@ router.post('/resetPassword', UserController.resetPassword);
 
 /**
  * @swagger
- * /user/refreshAccessToken:
+ * /refreshAccessToken:
  *   post:
  *     summary: Tạo accessToken mới
  *     description: Dùng refresh token để lấy access token mới khi access token cũ đã hết hạn.
@@ -452,7 +452,7 @@ router.post('/refreshAccessToken', UserController.refreshAccessToken);
 
 /**
  * @swagger
- * /user/logout:
+ * /logout:
  *   post:
  *     summary: Đăng xuất người dùng
  *     description: Đăng xuất người dùng bằng cách xóa refresh token khỏi server và yêu cầu access token hợp lệ qua header Authorization.
