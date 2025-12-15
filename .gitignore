@@ -12,6 +12,8 @@ CHECKLIST.md
 .vscode/
 # Environment
 *.env
+file-env.txt
+secret.yaml
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
