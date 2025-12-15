@@ -4,7 +4,7 @@ const upload = require("../middleware/multer");
 const authenticateToken = require("../middleware/auth");
 /**
  * @swagger
- * /recipe/addRecipe:
+ * /addRecipe:
  *   post:
  *     summary: Thêm công thức mới
  *     tags:
@@ -84,7 +84,7 @@ router.post('/addRecipe', upload.single('image'), authenticateToken, RecipeContr
 
 /**
  * @swagger
- * /recipe/searchByIngredient:
+ * /searchByIngredient:
  *   get:
  *     summary: Tìm món ăn theo tên thành phần
  *     tags:
@@ -124,7 +124,7 @@ router.get('/searchByIngredient', authenticateToken, RecipeController.searchByIn
 
 /**
  * @swagger
- * /recipe/searchByRecipe:
+ * /searchByRecipe:
  *   get:
  *     summary: Tìm kiếm món ăn theo tên
  *     tags:
@@ -193,7 +193,7 @@ router.get('/searchByRecipe', authenticateToken, RecipeController.searchByRecipe
 
 /**
  * @swagger
- * /recipe/randomRecipe:
+ * /randomRecipe:
  *   get:
  *     summary: Lấy một món ăn ngẫu nhiên
  *     tags:
@@ -235,7 +235,7 @@ router.get('/randomRecipe', authenticateToken, RecipeController.randomRecipe);
 
 /**
  * @swagger
- * /recipe/likeRecipes:
+ * /likeRecipes:
  *   get:
  *     summary: Lấy danh sách món ăn được nhiều người yêu thích
  *     tags:
@@ -279,7 +279,7 @@ router.get('/likeRecipes', authenticateToken, RecipeController.getLikeRecipes);
 
 /**
  * @swagger
- * /recipe/{id}:
+ * /{id}:
  *   get:
  *     summary: Lấy thông tin công thức theo ID
  *     tags:
