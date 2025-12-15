@@ -12,6 +12,10 @@ CHECKLIST.md
 .vscode/
 # Environment
 *.env
+file-env.txt
+secret.yaml
+secret-recipe.yaml
+secret-user.yaml
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -294,3 +298,9 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
