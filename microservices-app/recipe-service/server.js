@@ -10,6 +10,10 @@ const app = express();
 
 app.use(body_parser.json());
 
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
+
 app.use('/api/recipe', recipeRouter);
 app.use('/recipe-api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));  
 
