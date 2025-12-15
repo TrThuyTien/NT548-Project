@@ -14,6 +14,8 @@ CHECKLIST.md
 *.env
 file-env.txt
 secret.yaml
+secret-recipe.yaml
+secret-user.yaml
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -26,7 +26,7 @@ spec:
         - containerPort: 5001
         envFrom:
         - secretRef:
-            name: cookmate-secret
+            name: cookmate-user-secret
         resources:
           requests:
             cpu: "100m"
