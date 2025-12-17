@@ -10,11 +10,11 @@ const VerifyOtp = () => {
     const inputRefs = useRef([]);
     const navigate = useNavigate();
     const location = useLocation();
+    const from = location.state?.from;
 
     const email = location.state?.email;
 
     useEffect(() => {
-        document.title = "Verify OTP - Motspetits";
         if (!email) navigate('/signup');
 
         setTimeout(() => {
@@ -65,17 +65,23 @@ const VerifyOtp = () => {
         const otpCode = otp.join('');
 
         if (otpCode.length !== 6) {
-            setErrorMsg('Please enter full 6-digit OTP code.');
+            setErrorMsg('Hãy nhập mã OTP gồm 6 chữ số.');
             return;
         }
 
         try {
             setLoading(true);
             await verifyOtpApi(email, otpCode);
-            alert("Đăng ký thành công! Vui lòng đăng nhập.");
+            if (from === 'forgot_password') {
+                alert("OTP đã xác minh! Bạn có thể đặt lại mật khẩu.");
+                navigate('/reset_password', { state: { email } });
+            }
+            else {
+            alert("OTP đã xác minh! Bạn có thể đăng nhập.");
             navigate('/login');
+            }
         } catch (e) {
-            setErrorMsg(e.message || "OTP verification failed");
+            setErrorMsg(e.message || "Xác minh OTP thất bại. Vui lòng thử lại.");
         } finally {
             setLoading(false);
         }

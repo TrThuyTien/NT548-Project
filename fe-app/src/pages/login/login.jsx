@@ -1,11 +1,42 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import style from './login.module.css';
 import logo from '/logo.png';
+import { loginApi } from '../../services/auth';
 
 const Login = () => {
     const navigate = useNavigate();
-    useEffect(() => {}, []);
+
+    const [login, setLogin] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+
+    const handleLogin = async () => {
+        if (!login || !password) {
+            setErrorMsg("Vui lòng nhập đầy đủ thông tin");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            setErrorMsg("");
+            const res = await loginApi(login, password);
+            console.log("Login success:", res);
+
+            if (res.accessToken) {
+                localStorage.setItem("accessToken", res.accessToken);
+            }
+
+            navigate("/"); 
+        } catch (err) {
+            console.error(err);
+            setErrorMsg(err.message || "Đăng nhập thất bại");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return ( 
         <div className={style.background}>
             <div className={style.left}>
@@ -24,19 +55,32 @@ const Login = () => {
             <div className={style.right}>
                 <div className={style.container}>
                     <div className={style.title}>ĐĂNG NHẬP</div>
+
                    <input
-                   type="text"
-                   placeholder="Email or Username"
-                   className={style.inputField} /> 
+                       type="text"
+                       placeholder="Email or Username"
+                       className={style.inputField}
+                       value={login}
+                       onChange={(e) => setLogin(e.target.value)}
+                   /> 
+
                    <input
-                   type="password"
-                   placeholder="Password"
-                   className={style.inputField} />
+                       type="password"
+                       placeholder="Password"
+                       className={style.inputField}
+                       value={password}
+                       onChange={(e) => setPassword(e.target.value)}
+                   />
+
                    <div className={style.forgotpassword} onClick={() => navigate('/forgot_password')}>Quên mật khẩu?</div>
-                   <div  style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                        <button className={style.button}>Đăng nhập</button>
+
+                   {errorMsg && <div style={{ color: "red", marginBottom: 10 }}>{errorMsg}</div>}
+
+                   <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                        <button className={style.button} onClick={handleLogin} disabled={loading}>
+                            {loading ? "Đang xử lý..." : "Đăng nhập"}
+                        </button>
                    </div>
-                   
                 </div>
             </div>
          </div>
