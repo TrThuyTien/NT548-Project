@@ -32,17 +32,12 @@ const userSchema = new Schema({
     }
 });
 
-userSchema.pre("save", async function(next) {
-    try {
-        if (!this.isModified("password")) return next(); // Chỉ hash khi password thay đổi
+userSchema.pre("save", async function() {
+    if (!this.isModified("password")) return;
 
-        const salt = await bcrypt.genSalt(10);
-        const hashPass = await bcrypt.hash(this.password, salt);
-        this.password = hashPass;
-        next();
-    } catch (error) {
-        next(error);
-    }
+    const salt = await bcrypt.genSalt(10);
+    const hashPass = await bcrypt.hash(this.password, salt);
+    this.password = hashPass;
 });
 
 userSchema.methods.comparePassword = async function (userPassword) {
