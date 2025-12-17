@@ -59,22 +59,25 @@ class UserService {
 
     static async checkUser(login) {
         try {
+            if (!login || typeof login !== 'string') {
+                throw new Error("Invalid login input");
+            }
+
             let query = {};
-
             if (login.includes('@')) {
-                query = {email: login};
+                query = { email: login };
+            } else {
+                query = { username: login };
             }
-            else {
-                query = {username: login};
-            }
-            const user = await UserModel.findOne(query);
 
+            const user = await UserModel.findOne(query);
             return user;
-        }
-        catch (error) {
+        } catch (error) {
             console.log("Check User Service Error: ", error);
+            return null;
         }
     }
+
 
     static async checkUserById(userId) {
         try {
