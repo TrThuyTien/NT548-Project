@@ -1,0 +1,32 @@
+.heartBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+
+.iconUnliked {
+  color: #5e2798;
+  font-size: 18px;
+}
+
+.iconLiked {
+  color: #e74c3c;
+  font-size: 18px;
+}
+
+.heartBtn:hover {
+  transform: scale(1.1);
+  background: white;
+}

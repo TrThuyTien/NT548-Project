@@ -1,12 +1,14 @@
 const express = require("express");
 const body_parser = require("body-parser");
+const cors = require("cors");
 const userRouter = require("./routers/user_router");
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs/swagger');
 require("dotenv").config();
 
-
 const app = express();
+
+app.use(cors()); 
 
 app.use(body_parser.json());
 
