@@ -7,7 +7,7 @@ class UserService {
             const createUser = new UserModel({email, username, password});
             return await createUser.save();
         } 
-        catch (err) {
+        catch (error) {
             console.log("Register User Service Error: ", error);
         }
     }
