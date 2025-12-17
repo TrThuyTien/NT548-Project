@@ -12,6 +12,7 @@ CHECKLIST.md
 .vscode/
 # Environment
 *.env
+*.pem
 file-env.txt
 secret.yaml
 secret-recipe.yaml
@@ -19,13 +20,14 @@ secret-user.yaml
 
 # Terraform 
 
-.terraform/
+*.terraform/
 *.tfstate
 *.tfstate.backup
 *.tfplan
 .terraform.lock.hcl
 crash.log
 *.log
+
 
 
 # User-specific files (MonoDevelop/Xamarin Studio)
