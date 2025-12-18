@@ -8,7 +8,6 @@ pipeline {
         REGISTRY_PROJECT = 'nt548-project'
         
         // AWS credentials
-        AWS_CRED = credentials('aws-credentials')
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_REGION = 'ap-southeast-1'
