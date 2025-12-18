@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         nodejs "NodeJS"
+        sonarQubeScanner 'SonarScanner'
     }
     environment {
         // Registry credentials
