@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         nodejs "NodeJS"
-        hudson.plugins.sonar.SonarRunnerInstallation 'SonarScanner'
     }
     environment {
         // Registry credentials
