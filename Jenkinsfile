@@ -36,8 +36,18 @@ pipeline {
         DEPLOY_DIR = "deployment"
     }
     
-    triggers {
-        githubPush()
+    triggers { 
+        GenericTrigger( 
+            genericVariables: [ 
+                [key: 'action', value: '$.action'], 
+                [key: 'release_tag', value: '$.release.tag_name'], 
+                [key: 'release_name', value: '$.release.name'] ], 
+            causeString: 'Triggered by GitHub Release: $release_tag', 
+            token: 'nt548-release-webhook-token', 
+            printContributedVariables: true, 
+            printPostContent: true, 
+            regexpFilterText: '$action', 
+            regexpFilterExpression: '^(published|released)' ) 
     }
     
     stages {
@@ -47,10 +57,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Tag Name: ${env.TAG_NAME}"
-                    echo "Branch: ${env.GIT_BRANCH}"
-                    echo "Commit: ${env.GIT_COMMIT}"
-                    echo "Image Tag: ${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}"
+                    echo "Building tag: ${env.TAG_NAME}"
                 }
             }
         }
