@@ -42,6 +42,9 @@ pipeline {
     
     stages {
         stage('verify-tag') {
+            when {
+                buildingTag()
+            }
             steps {
                 script {
                     if (!env.TAG_NAME) {
