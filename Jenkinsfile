@@ -47,8 +47,10 @@ pipeline {
             }
             steps {
                 script {
-                    echo "Building for tag: ${CI_COMMIT_TAG}"
-                    echo "Commit SHA: ${CI_COMMIT_SHORT_SHA}"
+                    echo "Tag Name: ${env.TAG_NAME}"
+                    echo "Branch: ${env.GIT_BRANCH}"
+                    echo "Commit: ${env.GIT_COMMIT}"
+                    echo "Image Tag: ${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}"
                 }
             }
         }
