@@ -1,6 +1,8 @@
 pipeline {
     agent any
-    
+    tools {
+        nodejs "NodeJS"
+    }
     environment {
         // Registry credentials
         REGISTRY_CRED = credentials('REGISTRY-CRED')
@@ -10,7 +12,7 @@ pipeline {
         // AWS credentials
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_REGION = 'ap-southeast-1'
+        AWS_REGION = 'us-east-1'
         EKS_CLUSTER_NAME = credentials('eks-cluster-name')
         
         // Git info
@@ -40,11 +42,11 @@ pipeline {
     
     stages {
         stage('verify-tag') {
+            when {
+                buildingTag()
+            }
             steps {
                 script {
-                    if (!env.TAG_NAME) {
-                        error "This build was not triggered by a tag. Aborting..."
-                    }
                     echo "Building for tag: ${CI_COMMIT_TAG}"
                     echo "Commit SHA: ${CI_COMMIT_SHORT_SHA}"
                 }
@@ -175,15 +177,20 @@ pipeline {
                             ==========================================
                             """
                             
-                            // Configure kubectl
-                            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
-                                            credentialsId: 'aws-credentials']]) {
+                            // Configure kubectl using explicit AWS credentials
+                            withCredentials([
+                                string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                                string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                            ]) {
                                 sh(script: """
+                                    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                                    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                                     aws eks update-kubeconfig \
                                         --region ${AWS_REGION} \
                                         --name ${EKS_CLUSTER_NAME}
                                 """, label: "update kubeconfig")
                             }
+
                             
                             // Apply namespace
                             dir("${DEPLOY_DIR}") {
@@ -208,10 +215,7 @@ pipeline {
                                 
                                 sh(script: "kubectl apply -f recipe-service-deploy.yaml", label: "deploy recipe service")
                                 
-                                sh(script: """
-                                    kubectl rollout status deployment/recipe-service \
-                                        -n microservices --timeout=5m
-                                """, label: "wait for recipe rollout")
+                            
                             }
                             
                             // Deploy user service
@@ -223,10 +227,7 @@ pipeline {
                                 
                                 sh(script: "kubectl apply -f user-service-deploy.yaml", label: "deploy user service")
                                 
-                                sh(script: """
-                                    kubectl rollout status deployment/user-service \
-                                        -n microservices --timeout=5m
-                                """, label: "wait for user rollout")
+                                
                             }
 
                             
@@ -235,11 +236,11 @@ pipeline {
                                 echo "=========================================="
                                 echo "DEPLOYMENT STATUS"
                                 echo "=========================================="
-                                kubectl get deployments -n microservices
+                                kubectl get deployments -n cookmate
                                 echo ""
-                                kubectl get pods -n microservices
+                                kubectl get pods -n cookmate
                                 echo ""
-                                kubectl get svc -n microservices
+                                kubectl get svc -n cookmate
                             """, label: "check deployment status")
                             
                         } else {
