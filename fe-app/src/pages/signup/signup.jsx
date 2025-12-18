@@ -30,8 +30,8 @@ const Signup = () => {
       console.log("Register success:", res);
 
       alert("Đăng ký thành công! Vui lòng kiểm tra email để nhập OTP.");
-      
-      navigate("/verify_otp", { state: { email } });
+
+      navigate("/verify_otp", { state: { email, from: "signup" } });
     } catch (err) {
       alert(err.message || "Đăng ký thất bại");
     } finally {

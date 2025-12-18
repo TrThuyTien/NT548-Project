@@ -149,25 +149,17 @@
 }
 
 .textfeat {
+    margin-top: 20px;
     font-family: 'Nunito', sans-serif;
     color: #966cc4;
     font-size: 16px;
+    text-align: center;
 }
 
-.timefeat {
-  display: flex;
-  gap: 6px; 
-  font-size: 14px;
-  color: #666;
-  margin-top: 7px;
-}
-
-.iconView {
-  color: #5e2798; 
-  font-size: 16px;
-}
-
-.iconHeart {
-  color: #ba0606; 
-  font-size: 16px;
+.textlike {
+    font-size: 13px;
+    color: #5e2798;
+    font-family: 'Nunito', sans-serif;
+    margin-top: 10px;
+    opacity: 0.7
 }

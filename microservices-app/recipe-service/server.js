@@ -1,5 +1,6 @@
 const express = require("express");
 const body_parser = require("body-parser");
+const cors = require("cors");
 const recipeRouter = require("./routers/recipe_router");
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs/swagger');
@@ -7,7 +8,7 @@ require("dotenv").config();
 
 
 const app = express();
-
+app.use(cors());
 app.use(body_parser.json());
 
 app.get('/health', (req, res) => {

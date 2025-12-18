@@ -46,21 +46,21 @@ export const loginApi = async (login, password) => {
 
 export const updateAvatarApi = async (file, accessToken) => {
   const formData = new FormData();
-  formData.append("image", file);
+  formData.append("image", file); 
 
   const response = await axios.post(
-    `${url}/updateAvatar`,
+    `${url}/api/user/updateAvatar`,
     formData,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "multipart/form-data",
       },
     }
   );
 
   return response.data;
 };
+
 
 export const forgotPasswordApi = async (email) => {
   try {

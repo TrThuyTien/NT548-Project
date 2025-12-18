@@ -19,7 +19,7 @@ const ForgotPassword = () => {
       setLoading(true);
       await forgotPasswordApi(email);
       alert("Đã gửi email khôi phục mật khẩu");
-      navigate("/verify_otp", { state: { email } });
+      navigate("/verify_otp", { state: { email, from: "forgot_password" } });
     } catch (err) {
       console.error("Forgot password error:", err);
       alert(err.message || "Gửi email thất bại");
