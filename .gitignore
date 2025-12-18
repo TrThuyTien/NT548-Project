@@ -24,7 +24,7 @@ secret-user.yaml
 *.tfstate
 *.tfstate.backup
 *.tfplan
-.terraform.lock.hcl
+*.terraform.lock.hcl
 crash.log
 *.log
 
