@@ -171,15 +171,20 @@ pipeline {
                             ==========================================
                             """
                             
-                            // Configure kubectl
-                            withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', 
-                                            credentialsId: 'aws-credentials']]) {
+                            // Configure kubectl using explicit AWS credentials
+                            withCredentials([
+                                string(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                                string(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                            ]) {
                                 sh(script: """
+                                    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                                    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                                     aws eks update-kubeconfig \
                                         --region ${AWS_REGION} \
                                         --name ${EKS_CLUSTER_NAME}
                                 """, label: "update kubeconfig")
                             }
+
                             
                             // Apply namespace
                             dir("${DEPLOY_DIR}") {
