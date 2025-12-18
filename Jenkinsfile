@@ -42,11 +42,11 @@ pipeline {
     
     stages {
         stage('verify-tag') {
-            when {
-                buildingTag()
-            }
             steps {
                 script {
+                    if (!env.TAG_NAME) {
+                        error "This build was not triggered by a tag. Aborting..."
+                    }
                     echo "Building for tag: ${CI_COMMIT_TAG}"
                     echo "Commit SHA: ${CI_COMMIT_SHORT_SHA}"
                 }
