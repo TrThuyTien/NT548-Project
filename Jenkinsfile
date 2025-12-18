@@ -63,7 +63,7 @@ pipeline {
                                     sh(script: "npm install", label: "install dependencies")
                                     withSonarQubeEnv('SonarQube') {
                                         sh(script: """
-                                            sonar-scanner \
+                                            ${SCANNER_HOME}/bin/sonar-scanner \
                                                 -Dsonar.projectKey=${RECIPE_SERVICE} \
                                                 -Dsonar.projectName='Recipe Service' \
                                                 -Dsonar.projectVersion=${CI_COMMIT_TAG} \
