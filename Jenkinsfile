@@ -198,9 +198,11 @@ pipeline {
                             // Deploy recipe service
                             dir("${DEPLOY_DIR}") {
                                 sh(script: """
-                                    sed 's|image:.*recipe-service.*|image: ${RECIPE_IMAGE}|g' \
-                                        recipe-service-all.yaml > recipe-service-deploy.yaml
-                                """, label: "update recipe image tag")
+                                                kubectl set image deployment/cookmate-recipe \
+                                                    cookmate-recipe=${RECIPE_IMAGE} \
+                                                    -n cookmate
+                                            """, label: "update recipe image tag via kubectl")
+
                                 
                                 sh(script: "kubectl apply -f recipe-service-deploy.yaml", label: "deploy recipe service")
                                 
