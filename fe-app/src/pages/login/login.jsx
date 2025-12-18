@@ -24,11 +24,25 @@ const Login = () => {
             const res = await loginApi(login, password);
             console.log("Login success:", res);
 
-            if (res.accessToken) {
-                localStorage.setItem("accessToken", res.accessToken);
+            if (!res.accessToken) {
+                setErrorMsg("Không nhận được token");
+                return;
             }
 
-            navigate("/"); 
+            const userData = {
+                _id: res._id,
+                email: res.email,
+                username: res.username,
+                avatar: res.avatar
+            };
+
+            localStorage.setItem("accessToken", res.accessToken);
+            localStorage.setItem("user", JSON.stringify(userData));
+
+            navigate("/", { 
+                state: { token: res.accessToken, user: userData },
+                replace: true
+            });
         } catch (err) {
             console.error(err);
             setErrorMsg(err.message || "Đăng nhập thất bại");
@@ -44,8 +58,8 @@ const Login = () => {
                 <div className={style.textpreview}>
                     <p>Không cần phải là MasterChef, chỉ cần KitchenWhiz.</p>
                     <p>Bạn chỉ việc chọn nguyên liệu, còn lại để KitchenWhiz lo.</p>
-                    <p>Dù bạn ‘gà mờ’ trong bếp hay đam mê nấu nướng,</p>
-                    <p>KitchenWhiz sẽ biến mỗi bữa ăn thành một ‘show diễn’ cực chill!</p>
+                    <p>Dù bạn 'gà mờ' trong bếp hay đam mê nấu nướng,</p>
+                    <p>KitchenWhiz sẽ biến mỗi bữa ăn thành một 'show diễn' cực chill!</p>
                 </div>
                 <div className={style.buttonContainer}>
                     <button className={style.button} onClick={() => navigate('/signup')}>Đăng ký</button>

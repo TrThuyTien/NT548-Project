@@ -4,9 +4,9 @@
 }
 
 .imgcontainer {
-    width: 200px;
-    height: 200px;
-    margin-top: 20px;
+    width: 290px;
+    height: 290px;
+    margin-top: 30px;
     position: absolute;
     right: 50px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -20,7 +20,7 @@
 }
 
 .title {
-    font-size: 25px;
+    font-size: 28px;
     font-family: 'Nunito', sans-serif;
     font-weight: bold;
     color: #5e2798;
@@ -29,7 +29,7 @@
 }
 
 .description {
-    font-size: 18px;
+    font-size: 22px;
     color: #7831ab;
     font-family:  'Open Sans', sans-serif;
     margin-top: 15px;
@@ -47,7 +47,7 @@
 }
 .nutritionitem {
     text-align: center;
-    font-size: 17px;
+    font-size: 20px;
     font-family: 'Nunito', sans-serif;
     padding: 0 30px;
 } 
@@ -55,7 +55,7 @@
   border-left: 1px solid #704999; 
 }
  .nutritionitemvalue {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     color: #735197;
     display: block;
@@ -68,29 +68,13 @@
     background: #ffff;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    margin-top: 80px;
+    margin-top: 150px;
     padding: 10px;
     box-shadow: 0 -4px 3px rgba(0, 0, 0, 0.1);
 }
 
 .titleIngredients {
-    font-size: 20px;
-    font-weight: bold;
-    color: #5e2798;
-    font-family: 'Nunito', sans-serif;
-    margin-left: 20px;
-}
-
-.ingredientsList {
-    font-size: 16px;
-    color: #8758a8;
-    font-family: 'Open Sans', sans-serif;
-    margin-top: 10px;
-    margin-left: 10px;
-}
-
-.titleSteps {
-    font-size: 20px;
+    font-size: 25px;
     font-weight: bold;
     color: #5e2798;
     font-family: 'Nunito', sans-serif;
@@ -98,8 +82,25 @@
     margin-top: 30px;
 }
 
+.ingredientsList {
+    font-size: 20px;
+    color: #8758a8;
+    font-family: 'Open Sans', sans-serif;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.titleSteps {
+    font-size: 25px;
+    font-weight: bold;
+    color: #5e2798;
+    font-family: 'Nunito', sans-serif;
+    margin-left: 20px;
+    margin-top: 50px;
+}
+
 .steps {
-    font-size: 16px;
+    font-size: 20px;
     color: #8758a8;
     font-family: 'Open Sans', sans-serif;
     margin-top: 10px;
