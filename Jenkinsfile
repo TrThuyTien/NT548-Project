@@ -47,7 +47,8 @@ pipeline {
             printContributedVariables: true, 
             printPostContent: true, 
             regexpFilterText: '$action', 
-            regexpFilterExpression: '^(published|released)' ) 
+            regexpFilterExpression: '^(published|released)' 
+        ) 
     }
     
     stages {
