@@ -37,31 +37,10 @@ pipeline {
     }
     
     triggers { 
-        GenericTrigger( 
-            genericVariables: [ 
-                [key: 'action', value: '$.action'], 
-                [key: 'release_tag', value: '$.release.tag_name'], 
-                [key: 'release_name', value: '$.release.name'] ], 
-            causeString: 'Triggered by GitHub Release: $release_tag', 
-            token: 'nt548-release-webhook-token', 
-            printContributedVariables: true, 
-            printPostContent: true, 
-            regexpFilterText: '$action', 
-            regexpFilterExpression: '^(published|released)' 
-        ) 
+        githubPush()
     }
     
     stages {
-        stage('verify-tag') {
-            when {
-                buildingTag()
-            }
-            steps {
-                script {
-                    echo "Building tag: ${env.TAG_NAME}"
-                }
-            }
-        }
         
         stage('build-and-push') {
             parallel {
