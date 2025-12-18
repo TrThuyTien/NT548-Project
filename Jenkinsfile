@@ -1,6 +1,8 @@
 pipeline {
     agent any
-    
+    tools {
+        nodejs "NodeJS"
+    }
     environment {
         // Registry credentials
         REGISTRY_CRED = credentials('REGISTRY-CRED')
