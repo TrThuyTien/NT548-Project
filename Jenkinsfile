@@ -187,7 +187,7 @@ pipeline {
                             
                             // Deploy recipe service
                             dir("${DEPLOY_DIR}") {
-                                sh(script: "kubectl apply -f recipe-service-deploy.yaml", label: "deploy recipe service")
+                                sh(script: "kubectl apply -f recipe-service-all.yaml", label: "deploy recipe service")
                                 sh(script: """
                                                 kubectl set image deployment/cookmate-recipe \
                                                     cookmate-recipe=${RECIPE_IMAGE} \
@@ -197,7 +197,7 @@ pipeline {
                             
                             // Deploy user service
                             dir("${DEPLOY_DIR}") {
-                                sh(script: "kubectl apply -f user-service-deploy.yaml", label: "deploy user service")
+                                sh(script: "kubectl apply -f user-service-all.yaml", label: "deploy user service")
                                 sh(script: """
                                                 kubectl set image deployment/cookmate-user \
                                                     cookmate-user=${USER_IMAGE} \
