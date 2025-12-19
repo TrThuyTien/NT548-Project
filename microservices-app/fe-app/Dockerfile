@@ -1,16 +1,15 @@
-FROM node:22-alpine AS build
+FROM node:20-alpine AS build
 WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
 COPY . .
-RUN npm install && npm run build
+RUN npm run build
 
 FROM nginx:alpine
-
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 
-COPY public/env.template.js /usr/share/nginx/html/env.template.js
-
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
-
 EXPOSE 80
-CMD ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
