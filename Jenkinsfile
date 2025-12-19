@@ -51,7 +51,7 @@ pipeline {
                         stage('sonarqube-recipe') {
                             steps {
                                 dir("${RECIPE_DIR}") {
-                                    sh(script: "npm install", label: "install dependencies")
+                                    sh(script: "npm install --legacy-peer-deps", label: "install dependencies")
                                     withSonarQubeEnv('SonarQube') {
                                         sh(script: """
                                             sonar-scanner \
