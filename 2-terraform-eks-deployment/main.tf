@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "ap-southeast-1"
 }
 
 module "vpc" {
@@ -7,7 +7,7 @@ module "vpc" {
 
   project_name = var.project_name
   cluster_name = var.cluster_name
-  azs          = ["us-east-1a", "us-east-1b"]
+  azs          = ["ap-southeast-1a", "ap-southeast-1b"]
 }
 
 module "eks" {
