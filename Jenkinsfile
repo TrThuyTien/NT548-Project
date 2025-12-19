@@ -12,20 +12,21 @@ pipeline {
         // AWS credentials
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_REGION = 'us-east-1'
+        AWS_REGION = credentials('AWS_REGION')
         EKS_CLUSTER_NAME = credentials('eks-cluster-name')
         
         // Git info
-        CI_COMMIT_TAG = "${env.TAG_NAME ?: 'latest'}"
         CI_COMMIT_SHORT_SHA = "${env.GIT_COMMIT[0..7]}"
         
         // Service names
         RECIPE_SERVICE = "recipe-service"
         USER_SERVICE = "user-service"
+        FE_SERVICE = "fe-app"
         
         // Image tags
-        RECIPE_IMAGE = "${REGISTRY_URL}/${REGISTRY_PROJECT}/${RECIPE_SERVICE}:${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}"
-        USER_IMAGE = "${REGISTRY_URL}/${REGISTRY_PROJECT}/${USER_SERVICE}:${CI_COMMIT_TAG}_${CI_COMMIT_SHORT_SHA}"
+        RECIPE_IMAGE = "${REGISTRY_URL}/${REGISTRY_PROJECT}/${RECIPE_SERVICE}:${CI_COMMIT_SHORT_SHA}"
+        USER_IMAGE = "${REGISTRY_URL}/${REGISTRY_PROJECT}/${USER_SERVICE}:${CI_COMMIT_SHORT_SHA}"
+        FE_IMAGE = "${REGISTRY_URL}/${REGISTRY_PROJECT}/${FE_SERVICE}:${CI_COMMIT_SHORT_SHA}"
         
         // Docker login command
         dockerLogin = "echo ${REGISTRY_CRED_PSW} | docker login ${REGISTRY_URL} -u ${REGISTRY_CRED_USR} --password-stdin"
@@ -33,26 +34,15 @@ pipeline {
         // Directories
         RECIPE_DIR = "microservices-app/recipe-service"
         USER_DIR = "microservices-app/user-service"
+        FE_DIR= "microservices-app/fe-app"
         DEPLOY_DIR = "deployment"
     }
     
-    triggers {
+    triggers { 
         githubPush()
     }
     
     stages {
-        stage('verify-tag') {
-            when {
-                buildingTag()
-            }
-            steps {
-                script {
-                    echo "Building for tag: ${CI_COMMIT_TAG}"
-                    echo "Commit SHA: ${CI_COMMIT_SHORT_SHA}"
-                }
-            }
-        }
-        
         stage('build-and-push') {
             parallel {
                 stage('recipe-service') {
@@ -66,7 +56,7 @@ pipeline {
                                             sonar-scanner \
                                                 -Dsonar.projectKey=${RECIPE_SERVICE} \
                                                 -Dsonar.projectName='Recipe Service' \
-                                                -Dsonar.projectVersion=${CI_COMMIT_TAG} \
+                                                -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
                                                 -Dsonar.sources=. \
                                                 -Dsonar.exclusions=node_modules/**,test/**,coverage/**
                                         """, label: "sonarqube scan")
@@ -116,7 +106,7 @@ pipeline {
                                             sonar-scanner \
                                                 -Dsonar.projectKey=${USER_SERVICE} \
                                                 -Dsonar.projectName='User Service' \
-                                                -Dsonar.projectVersion=${CI_COMMIT_TAG} \
+                                                -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
                                                 -Dsonar.sources=. \
                                                 -Dsonar.exclusions=node_modules/**,test/**,coverage/**
                                         """, label: "sonarqube scan")
@@ -155,6 +145,57 @@ pipeline {
                     }
                 }
             }
+
+            stage('fe-app') {
+                    stages {
+                        stage('sonarqube-fe') {
+                            steps {
+                                dir("${USER_DIR}") {
+                                    sh(script: "npm install", label: "install dependencies")
+                                    withSonarQubeEnv('SonarQube') {
+                                        sh(script: """
+                                            sonar-scanner \
+                                                -Dsonar.projectKey=${FE_SERVICE} \
+                                                -Dsonar.projectName='FE APP' \
+                                                -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
+                                                -Dsonar.sources=. \
+                                                -Dsonar.exclusions=node_modules/**,test/**,coverage/**
+                                        """, label: "sonarqube scan")
+                                    }
+                                }
+                            }
+                        }
+                        
+                        stage('build-fe') {
+                            steps {
+                                dir("${FE_DIR}") {
+                                    sh(script: "${dockerLogin}", label: "docker login")
+                                    sh(script: "docker build -t ${FE_IMAGE} .", label: "build image")
+                                }
+                            }
+                        }
+                        
+                        stage('trivy-fe') {
+                            steps {
+                                sh(script: """
+                                    trivy image \
+                                        --severity HIGH,CRITICAL \
+                                        --exit-code 0 \
+                                        --format table \
+                                        ${FE_IMAGE}
+                                """, label: "trivy scan")
+                            }
+                        }
+                        
+                        stage('push-fe') {
+                            steps {
+                                sh(script: "${dockerLogin}", label: "docker login")
+                                sh(script: "docker push ${FE_IMAGE}", label: "push image")
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         stage('deploy') {
@@ -166,16 +207,6 @@ pipeline {
                                 parameters: [choice(name: 'deploy', choices: 'no\nyes', description: 'Choose "yes" if you want to deploy!')]
                         }
                         if (env.useChoice == 'yes') {
-                            echo """
-                            ==========================================
-                            DEPLOYING TO EKS
-                            ==========================================
-                            Tag: ${CI_COMMIT_TAG}
-                            Commit: ${CI_COMMIT_SHORT_SHA}
-                            Cluster: ${EKS_CLUSTER_NAME}
-                            Region: ${AWS_REGION}
-                            ==========================================
-                            """
                             
                             // Configure kubectl using explicit AWS credentials
                             withCredentials([
@@ -208,34 +239,36 @@ pipeline {
                             
                             // Deploy recipe service
                             dir("${DEPLOY_DIR}") {
+                                sh(script: "kubectl apply -f recipe-service-all.yaml", label: "deploy recipe service")
                                 sh(script: """
-                                    sed 's|image:.*recipe-service.*|image: ${RECIPE_IMAGE}|g' \
-                                        recipe-service-all.yaml > recipe-service-deploy.yaml
-                                """, label: "update recipe image tag")
-                                
-                                sh(script: "kubectl apply -f recipe-service-deploy.yaml", label: "deploy recipe service")
-                                
-                            
+                                                kubectl set image deployment/cookmate-recipe \
+                                                    cookmate-recipe=${RECIPE_IMAGE} \
+                                                    -n cookmate
+                                            """, label: "update recipe image tag")
                             }
                             
                             // Deploy user service
                             dir("${DEPLOY_DIR}") {
+                                sh(script: "kubectl apply -f user-service-all.yaml", label: "deploy user service")
                                 sh(script: """
-                                    sed 's|image:.*user-service.*|image: ${USER_IMAGE}|g' \
-                                        user-service-all.yaml > user-service-deploy.yaml
-                                """, label: "update user image tag")
-                                
-                                sh(script: "kubectl apply -f user-service-deploy.yaml", label: "deploy user service")
-                                
-                                
+                                                kubectl set image deployment/cookmate-user \
+                                                    cookmate-user=${USER_IMAGE} \
+                                                    -n cookmate
+                                            """, label: "update user image tag")
                             }
 
+                            // Deploy fe app
+                            dir("${DEPLOY_DIR}") {
+                                sh(script: "kubectl apply -f fe.yaml", label: "deploy fe app")
+                                sh(script: """
+                                                kubectl set image deployment/cookmate-fe \
+                                                    cookmate-fe=${FE_IMAGE} \
+                                                    -n cookmate
+                                            """, label: "update fe image tag")
+                            }
                             
                             // Verify deployment
                             sh(script: """
-                                echo "=========================================="
-                                echo "DEPLOYMENT STATUS"
-                                echo "=========================================="
                                 kubectl get deployments -n cookmate
                                 echo ""
                                 kubectl get pods -n cookmate
