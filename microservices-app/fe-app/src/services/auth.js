@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = import.meta.env.VITE_API_AUTH_URL;
+const url = "";
 
 export const registerApi = async (email, username, password) => {
   try {
