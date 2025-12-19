@@ -155,16 +155,6 @@ pipeline {
                                 parameters: [choice(name: 'deploy', choices: 'no\nyes', description: 'Choose "yes" if you want to deploy!')]
                         }
                         if (env.useChoice == 'yes') {
-                            echo """
-                            ==========================================
-                            DEPLOYING TO EKS
-                            ==========================================
-                            Tag: ${CI_COMMIT_TAG}
-                            Commit: ${CI_COMMIT_SHORT_SHA}
-                            Cluster: ${EKS_CLUSTER_NAME}
-                            Region: ${AWS_REGION}
-                            ==========================================
-                            """
                             
                             // Configure kubectl using explicit AWS credentials
                             withCredentials([
@@ -197,36 +187,27 @@ pipeline {
                             
                             // Deploy recipe service
                             dir("${DEPLOY_DIR}") {
+                                sh(script: "kubectl apply -f recipe-service-deploy.yaml", label: "deploy recipe service")
                                 sh(script: """
                                                 kubectl set image deployment/cookmate-recipe \
                                                     cookmate-recipe=${RECIPE_IMAGE} \
                                                     -n cookmate
-                                            """, label: "update recipe image tag via kubectl")
-
-                                
-                                sh(script: "kubectl apply -f recipe-service-deploy.yaml", label: "deploy recipe service")
-                                
-                            
+                                            """, label: "update recipe image tag")
                             }
                             
                             // Deploy user service
                             dir("${DEPLOY_DIR}") {
-                                sh(script: """
-                                    sed 's|image:.*user-service.*|image: ${USER_IMAGE}|g' \
-                                        user-service-all.yaml > user-service-deploy.yaml
-                                """, label: "update user image tag")
-                                
                                 sh(script: "kubectl apply -f user-service-deploy.yaml", label: "deploy user service")
-                                
-                                
+                                sh(script: """
+                                                kubectl set image deployment/cookmate-user \
+                                                    cookmate-user=${USER_IMAGE} \
+                                                    -n cookmate
+                                            """, label: "update user image tag")
                             }
 
                             
                             // Verify deployment
                             sh(script: """
-                                echo "=========================================="
-                                echo "DEPLOYMENT STATUS"
-                                echo "=========================================="
                                 kubectl get deployments -n cookmate
                                 echo ""
                                 kubectl get pods -n cookmate
