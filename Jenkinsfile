@@ -45,6 +45,7 @@ pipeline {
     stages {
         stage('build-and-push') {
             parallel {
+                // For recipe-service
                 stage('recipe-service') {
                     stages {
                         stage('sonarqube-recipe') {
@@ -94,7 +95,8 @@ pipeline {
                         }
                     }
                 }
-                
+
+                // For user-service
                 stage('user-service') {
                     stages {
                         stage('sonarqube-user') {
@@ -144,13 +146,13 @@ pipeline {
                         }
                     }
                 }
-            }
 
-            stage('fe-app') {
+                // For fe app
+                stage('fe-app') {
                     stages {
                         stage('sonarqube-fe') {
                             steps {
-                                dir("${USER_DIR}") {
+                                dir("${FE_DIR}") {
                                     sh(script: "npm install", label: "install dependencies")
                                     withSonarQubeEnv('SonarQube') {
                                         sh(script: """
@@ -186,7 +188,7 @@ pipeline {
                                 """, label: "trivy scan")
                             }
                         }
-                        
+                    
                         stage('push-fe') {
                             steps {
                                 sh(script: "${dockerLogin}", label: "docker login")
