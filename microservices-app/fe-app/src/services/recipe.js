@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = import.meta.env.VITE_API_RECIPE_URL;
+const url = "";
 
 export const getRandomRecipe = async (accessToken) => {
   try {

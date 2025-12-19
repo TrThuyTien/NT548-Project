@@ -6,17 +6,17 @@ variable "vpc_id" {}
 
 variable "node_desired_size" {
   type    = number
-  default = 2
+  default = 6
 }
 
 variable "node_min_size" {
   type    = number
-  default = 1
+  default = 5
 }
 
 variable "node_max_size" {
   type    = number
-  default = 3
+  default = 7
 }
 
 variable "instance_types" {
