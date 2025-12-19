@@ -21,5 +21,5 @@ variable "node_max_size" {
 
 variable "instance_types" {
   type    = list(string)
-  default = ["t3.medium"]
+  default = ["t3.micro"]
 }
