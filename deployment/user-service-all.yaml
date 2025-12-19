@@ -59,5 +59,3 @@ spec:
     - port: 80
       targetPort: 5001
   type: LoadBalancer
-
-
