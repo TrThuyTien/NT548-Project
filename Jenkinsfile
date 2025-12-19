@@ -227,7 +227,7 @@ pipeline {
                             
                             // Apply namespace
                             dir("${DEPLOY_DIR}") {
-                                sh(script: "kubectl apply -f namespace.yaml --validate=false", label: "create namespace")
+                                sh(script: "kubectl apply -f namespace.yaml ", label: "create namespace")
                             }
                             
                             // Create secrets from credentials
@@ -235,37 +235,37 @@ pipeline {
                                 file(credentialsId: 'secret-recipe-yaml', variable: 'RECIPE_SECRET_FILE'),
                                 file(credentialsId: 'secret-user-yaml', variable: 'USER_SECRET_FILE')
                             ]) {
-                                sh(script: "kubectl apply -f ${RECIPE_SECRET_FILE} --validate=false", label: "apply recipe secret")
-                                sh(script: "kubectl apply -f ${USER_SECRET_FILE} --validate=false", label: "apply user secret")
+                                sh(script: "kubectl apply -f ${RECIPE_SECRET_FILE} ", label: "apply recipe secret")
+                                sh(script: "kubectl apply -f ${USER_SECRET_FILE} ", label: "apply user secret")
                             }
                             
                             // Deploy recipe service
                             dir("${DEPLOY_DIR}") {
-                                sh(script: "kubectl apply -f recipe-service-all.yaml --validate=false", label: "deploy recipe service")
+                                sh(script: "kubectl apply -f recipe-service-all.yaml ", label: "deploy recipe service")
                                 sh(script: """
                                                 kubectl set image deployment/cookmate-recipe \
                                                     cookmate-recipe=${RECIPE_IMAGE} \
-                                                    -n cookmate --validate=false
+                                                    -n cookmate 
                                             """, label: "update recipe image tag")
                             }
                             
                             // Deploy user service
                             dir("${DEPLOY_DIR}") {
-                                sh(script: "kubectl apply -f user-service-all.yaml --validate=false", label: "deploy user service")
+                                sh(script: "kubectl apply -f user-service-all.yaml ", label: "deploy user service")
                                 sh(script: """
                                                 kubectl set image deployment/cookmate-user \
                                                     cookmate-user=${USER_IMAGE} \
-                                                    -n cookmate --validate=false
+                                                    -n cookmate
                                             """, label: "update user image tag")
                             }
 
                             // Deploy fe app
                             dir("${DEPLOY_DIR}") {
-                                sh(script: "kubectl apply -f fe.yaml --validate=false", label: "deploy fe app")
+                                sh(script: "kubectl apply -f fe.yaml ", label: "deploy fe app")
                                 sh(script: """
                                                 kubectl set image deployment/cookmate-fe \
                                                     cookmate-fe=${FE_IMAGE} \
-                                                    -n cookmate --validate=false
+                                                    -n cookmate 
                                             """, label: "update fe image tag")
                             }
                             
