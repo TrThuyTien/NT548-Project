@@ -19,7 +19,7 @@ variable "ami" {
 variable "ins_type" {
   description = "Instance type"
   type        = string
-  default     = "m7i-flex.large"
+  default     = "c7i-flex.large"
 }
 
 variable "key_name" {
