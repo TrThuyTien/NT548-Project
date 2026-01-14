@@ -1,7 +1,12 @@
 pipeline {
     agent any
     tools {
-        nodejs "NodeJS"
+        nodejs 'nodejs'
+        sonarScanner "sonarqube"
+    }
+
+    triggers {
+        githubPush()
     }
     environment {
         // Registry credentials
