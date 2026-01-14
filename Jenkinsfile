@@ -2,6 +2,7 @@ pipeline {
     agent any
     tools {
         nodejs 'nodejs'
+        // sonar
         sonarScanner "sonarqube"
     }
 
