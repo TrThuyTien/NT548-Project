@@ -15,7 +15,7 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
         AWS_REGION = credentials('AWS_REGION')
-        EKS_CLUSTER_NAME = credentials('eks-cluster-name')
+        EKS_CLUSTER_NAME = credentials('EKS_CLUSTER_NAME')
         
         // Git info
         CI_COMMIT_SHORT_SHA = "${env.GIT_COMMIT[0..7]}"
