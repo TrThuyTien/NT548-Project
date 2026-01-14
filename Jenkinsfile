@@ -53,17 +53,19 @@ pipeline {
                         stage('sonarqube-recipe') {
                             steps {
                                 dir("${RECIPE_DIR}") {
-                                    def scannerHome = tool 'sonarqube'
                                     sh(script: "npm install --legacy-peer-deps", label: "install dependencies")
-                                    withSonarQubeEnv('SonarQube') {
-                                        sh(script: """
-                                            ${scannerHome}/bin/sonar-scanner \
-                                                -Dsonar.projectKey=${RECIPE_SERVICE} \
-                                                -Dsonar.projectName='Recipe Service' \
-                                                -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
-                                                -Dsonar.sources=. \
-                                                -Dsonar.exclusions=node_modules/**,test/**,coverage/**
-                                        """, label: "sonarqube scan")
+                                    script {
+                                        def scannerHome = tool 'sonarqube'
+                                        withSonarQubeEnv('SonarQube') {
+                                            sh(script: """
+                                                ${scannerHome}/bin/sonar-scanner \
+                                                    -Dsonar.projectKey=${RECIPE_SERVICE} \
+                                                    -Dsonar.projectName='Recipe Service' \
+                                                    -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
+                                                    -Dsonar.sources=. \
+                                                    -Dsonar.exclusions=node_modules/**,test/**,coverage/**
+                                            """, label: "sonarqube scan")
+                                        }   
                                     }
                                 }
                             }
