@@ -56,16 +56,18 @@ pipeline {
                                     sh(script: "npm install --legacy-peer-deps", label: "install dependencies")
                                     script {
                                         def scannerHome = tool 'sonarqube'
-                                        withSonarQubeEnv('SonarQube') {
-                                            sh(script: """
-                                                ${scannerHome}/bin/sonar-scanner \
-                                                    -Dsonar.projectKey=${RECIPE_SERVICE} \
-                                                    -Dsonar.projectName='Recipe Service' \
-                                                    -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
-                                                    -Dsonar.sources=. \
-                                                    -Dsonar.exclusions=node_modules/**,test/**,coverage/**
-                                            """, label: "sonarqube scan")
-                                        }   
+                                        withEnv(["SONAR_SCANNER_OPTS=--add-opens java.base/java.lang=ALL-UNNAMED"]) {
+                                            withSonarQubeEnv('SonarQube') {
+                                                sh(script: """
+                                                    ${scannerHome}/bin/sonar-scanner \
+                                                        -Dsonar.projectKey=${RECIPE_SERVICE} \
+                                                        -Dsonar.projectName='Recipe Service' \
+                                                        -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
+                                                        -Dsonar.sources=. \
+                                                        -Dsonar.exclusions=node_modules/**,test/**,coverage/**
+                                                """, label: "sonarqube scan")
+                                            }
+                                        }  
                                     }
                                 }
                             }
@@ -110,15 +112,17 @@ pipeline {
                                     sh(script: "npm install", label: "install dependencies")
                                     script {
                                         def scannerHome = tool 'sonarqube'
-                                        withSonarQubeEnv('SonarQube') {
-                                            sh(script: """
-                                                ${scannerHome}/bin/sonar-scanner \
-                                                    -Dsonar.projectKey=${USER_SERVICE} \
-                                                    -Dsonar.projectName='User Service' \
-                                                    -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
-                                                    -Dsonar.sources=. \
-                                                    -Dsonar.exclusions=node_modules/**,test/**,coverage/**
-                                            """, label: "sonarqube scan")
+                                        withEnv(["SONAR_SCANNER_OPTS=--add-opens java.base/java.lang=ALL-UNNAMED"]) {
+                                            withSonarQubeEnv('SonarQube') {
+                                                sh(script: """
+                                                    ${scannerHome}/bin/sonar-scanner \
+                                                        -Dsonar.projectKey=${USER_SERVICE} \
+                                                        -Dsonar.projectName='User Service' \
+                                                        -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
+                                                        -Dsonar.sources=. \
+                                                        -Dsonar.exclusions=node_modules/**,test/**,coverage/**
+                                                """, label: "sonarqube scan")
+                                            }
                                         }
                                     }
                                 }
@@ -164,15 +168,17 @@ pipeline {
                                     sh(script: "npm install", label: "install dependencies")
                                     script {
                                         def scannerHome = tool 'sonarqube'
-                                        withSonarQubeEnv('SonarQube') {
-                                            sh(script: """
-                                                ${scannerHome}/bin/sonar-scanner \
-                                                    -Dsonar.projectKey=${FE_SERVICE} \
-                                                    -Dsonar.projectName='FE APP' \
-                                                    -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
-                                                    -Dsonar.sources=. \
-                                                    -Dsonar.exclusions=node_modules/**,test/**,coverage/**
-                                            """, label: "sonarqube scan")
+                                        withEnv(["SONAR_SCANNER_OPTS=--add-opens java.base/java.lang=ALL-UNNAMED"]) {
+                                            withSonarQubeEnv('SonarQube') {
+                                                sh(script: """
+                                                    ${scannerHome}/bin/sonar-scanner \
+                                                        -Dsonar.projectKey=${FE_SERVICE} \
+                                                        -Dsonar.projectName='FE APP' \
+                                                        -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
+                                                        -Dsonar.sources=. \
+                                                        -Dsonar.exclusions=node_modules/**,test/**,coverage/**
+                                                """, label: "sonarqube scan")
+                                            }
                                         }
                                     }
                                 }
