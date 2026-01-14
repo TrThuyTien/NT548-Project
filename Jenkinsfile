@@ -2,8 +2,7 @@ pipeline {
     agent any
     tools {
         nodejs 'nodejs'
-        // sonar
-        "sonar-scanner" "sonarqube"
+        
     }
 
     triggers {
