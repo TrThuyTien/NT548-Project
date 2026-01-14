@@ -3,7 +3,7 @@ pipeline {
     tools {
         nodejs 'nodejs'
         // sonar
-        sonarScanner "sonarqube"
+        sonarqubeScanner "sonarqube"
     }
 
     triggers {
