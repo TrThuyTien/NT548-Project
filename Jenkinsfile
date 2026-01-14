@@ -5,9 +5,6 @@ pipeline {
         
     }
 
-    triggers {
-        githubPush()
-    }
     environment {
         // Registry credentials
         REGISTRY_CRED = credentials('REGISTRY-CRED')
