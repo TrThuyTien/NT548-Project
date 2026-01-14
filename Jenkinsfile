@@ -108,15 +108,18 @@ pipeline {
                             steps {
                                 dir("${USER_DIR}") {
                                     sh(script: "npm install", label: "install dependencies")
-                                    withSonarQubeEnv('SonarQube') {
-                                        sh(script: """
-                                            sonar-scanner \
-                                                -Dsonar.projectKey=${USER_SERVICE} \
-                                                -Dsonar.projectName='User Service' \
-                                                -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
-                                                -Dsonar.sources=. \
-                                                -Dsonar.exclusions=node_modules/**,test/**,coverage/**
-                                        """, label: "sonarqube scan")
+                                    script {
+                                        def scannerHome = tool 'sonarqube'
+                                        withSonarQubeEnv('SonarQube') {
+                                            sh(script: """
+                                                ${scannerHome}/bin/sonar-scanner \
+                                                    -Dsonar.projectKey=${USER_SERVICE} \
+                                                    -Dsonar.projectName='User Service' \
+                                                    -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
+                                                    -Dsonar.sources=. \
+                                                    -Dsonar.exclusions=node_modules/**,test/**,coverage/**
+                                            """, label: "sonarqube scan")
+                                        }
                                     }
                                 }
                             }
@@ -159,15 +162,18 @@ pipeline {
                             steps {
                                 dir("${FE_DIR}") {
                                     sh(script: "npm install", label: "install dependencies")
-                                    withSonarQubeEnv('SonarQube') {
-                                        sh(script: """
-                                            sonar-scanner \
-                                                -Dsonar.projectKey=${FE_SERVICE} \
-                                                -Dsonar.projectName='FE APP' \
-                                                -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
-                                                -Dsonar.sources=. \
-                                                -Dsonar.exclusions=node_modules/**,test/**,coverage/**
-                                        """, label: "sonarqube scan")
+                                    script {
+                                        def scannerHome = tool 'sonarqube'
+                                        withSonarQubeEnv('SonarQube') {
+                                            sh(script: """
+                                                ${scannerHome}/bin/sonar-scanner \
+                                                    -Dsonar.projectKey=${FE_SERVICE} \
+                                                    -Dsonar.projectName='FE APP' \
+                                                    -Dsonar.projectVersion=${CI_COMMIT_SHORT_SHA} \
+                                                    -Dsonar.sources=. \
+                                                    -Dsonar.exclusions=node_modules/**,test/**,coverage/**
+                                            """, label: "sonarqube scan")
+                                        }
                                     }
                                 }
                             }
