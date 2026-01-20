@@ -221,6 +221,12 @@ CLOUDINARY_API_SECRET=<cloudinary_api_secret>
 ## 👥 Thành viên nhóm
 
 **NT548 - Group 09**
+| Tên thành viên | Mã số sinh viên |
+|----------------|-----------------|
+| **Trần Thị Thùy Tiên** | 23521588 |
+| **Trần Lê Uyên Thy** | 23521564 |
+| **Lê Trung Kiên** | 23520797 |
+| **Trần Thuận Thến** | 23521471 |
 
 ---
 
